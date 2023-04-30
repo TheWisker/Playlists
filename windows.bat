@@ -1,0 +1,3 @@
+
+tar -xf Name.zip
+ 
