@@ -40,7 +40,7 @@ fi
 mkdir -p ./Output/Playlists
 mkdir -p ./Output/Links/{Linux,Windows}
 
-./bin/yt-dlp --yes-playlist --skip-download --download-archive lks_metadata -N 3 -R 20 --buffer-size 10240 -P "$(dirname "$(realpath "$0")")/Output/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" --no-force-overwrites -c --write-url-link --write-desktop-link --progress --console-title --extractor-retries 5 --ffmpeg-location "./bin/" ${cookies[@]} ${urls[@]}
+./bin/yt-dlp --yes-playlist --skip-download --download-archive lks_metadata -N 3 -R 20 --buffer-size 10240 -P "$(dirname "$(realpath "$0")")/Output/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" --no-force-overwrites -c --write-url-link --write-desktop-link --progress --console-title --extractor-retries 5 ${cookies[@]} ${urls[@]} #--ffmpeg-location "./bin/"
 
 find . -name "*.desktop" -exec mv {} ./Output/Links/Linux/ \;
 find . -name "*.url" -exec mv {} ./Output/Links/Windows/ \;

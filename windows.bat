@@ -1,3 +1,4 @@
+@echo off
 
-tar -xf Name.zip
- 
+rd /s /q linux
+move windows\* .
