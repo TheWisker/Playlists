@@ -1,4 +1,4 @@
 @echo off
 
-rd /s /q linux
-move windows\* .
+::rd /s /q linux
+::move windows\* .
