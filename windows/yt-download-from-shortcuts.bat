@@ -13,10 +13,8 @@ if "%~1"=="" goto ERROR1
 if "%~1"=="-a" (set MODE=AUDIO) else (if "%~1"=="-v" (set MODE=VIDEO) else (goto ERROR1))
 if "%~2"=="" goto ERROR2
 
-:: set number of threads according to CPU capacity
+:: set number of threads according to your CPU capacity
 set THREADS=4
-::if %COMPUTERNAME%=="YourToaster" set THREADS=2
-::if %COMPUTERNAME%=="YourTank" set THREADS=8
 
 :: Display settings to show what's going to be done
 echo [PGM] %~nx0
@@ -70,23 +68,3 @@ echo [END]
 if exist %TARGETDIR%\tmp-file.tmp del %TARGETDIR%\tmp-file.tmp
 timeout 6
 exit
-
-:: #######################################################
-:: SOBRAS/NOTAS ##########################################
-:: #######################################################
-
-Uso de SHIFT: Ver https://ss64.com/nt/shift.html
-
-:: YT-DLP PARAMETERS:
-
-:: -o [output file name . ".%%(ext)s" pone la ext adecuada según el tipo de archivo a descargar]
-:: -x [downloads audio only] --audio-quality 0 -f 'bestaudio/bestaudio*/best' --match-filter 'duration<600'
-:: --ffmpeg-location . [localización de la libraría ffmpeg]
-:: --download-archive metadata [guarda lo que ha descargado y evita descargar lo mismo en el futuro]
-
-:: .\bin\yt-dlp.exe %URL% -P .\output -o %~n1.%%(ext)s --no-playlist --ffmpeg-location .\bin --download-archive yt-dlp.log -N 4 -R 10 --console-title --write-description --write-thumbnail --embed-thumbnail --write-subs --embed-subs --embed-metadata --embed-chapters --write-info-json --embed-info-json --clean-info-json --write-playlist-metafiles --sponsorblock-api "https://sponsor.ajay.app"
-
-::  .\bin\yt-dlp.exe %URL% -P .\output -o %~n1.%%(ext)s --ffmpeg-location .\bin --force-overwrite --no-playlist --download-archive yt-dlp.log -N 4 -R 10 --console-title  --sponsorblock-api "https://sponsor.ajay.app" 
-
-:: #######################################################
-
