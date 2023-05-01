@@ -33,6 +33,9 @@ urls=()
 #Script path variable
 rd=$(dirname "$(realpath "$0")")
 
+#Output path
+out="$rd/Output"
+
 #Sources the colors definitions
 source "$rd/bin/colors.sh"
 
@@ -105,7 +108,7 @@ done
 #Prints out the output folder
 eecho '· [Output]' blue
 echo ""
-eecho "··· $rd/Output/" cyan
+eecho "··· $out/" cyan
 echo ""
 
 #Prints out if it is going to use an archive file
@@ -132,10 +135,10 @@ echo ""
 echo ""
 
 #Asks to continue
-eecho 'Continue [Y/n]: ' purple
+eecho 'Continue [y/N]: ' purple
 read continue
 echo ""
-if [ "${continue^^}" == "N" ]; then
+if [ ! "${continue^^}" == "Y" ]; then
 	eecho 'Task aborted!' red
 	echo ""
 	exit
@@ -146,17 +149,17 @@ fi
 echo ""
 
 #Updates yt-dlp if it was not used for more than one day
-if ! [[ $(find "$rd/bin/yt-dlp" -type f -atime +0) ]]; then
+if ! [[ $(find "$rd/bin" -type f -name "yt-dlp" -atime +0) ]]; then
 	eecho 'Updating yt-dlp!' green
 	echo ""
 	"$rd/bin/yt-dlp" -U
 fi
 
 #Makes output directories
-mkdir -p "$rd/Output/Links/{Linux,Windows}"
-eecho "mkdir: $rd/Output/Links/Linux" green
+mkdir -p "$out/Links/"{Linux,Windows}
+eecho "mkdir: $out/Links/Linux" green
 echo ""
-eecho "mkdir: $rd/Output/Links/Windows" green
+eecho "mkdir: $out/Links/Windows" green
 echo ""
 echo ""
 
@@ -176,8 +179,8 @@ fi
 eecho "Starting downloads!" green
 echo ""
 echo ""
-$rd/bin/yt-dlp --ffmpeg-location "$rd/bin/" --download-archive "$rd/yt-dlp-ln.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
--P "$rd/Output/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" \
+"$rd/bin/yt-dlp" --ffmpeg-location "$rd/bin/" --download-archive "$rd/yt-dlp-ln.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
+-P "$out/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" \
 -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" \
 -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" \
 --no-force-overwrites -c --cache-dir "$rd/Cache" --write-url-link --write-desktop-link --progress --console-title --skip-download \
@@ -192,9 +195,9 @@ echo ""
 #Prints the playlists path and names
 eecho '·[Playlists]' blue
 echo ""
-eecho "·· Path: $rd/Output/Playlists/" cyan
+eecho "·· Path: $out/Playlists/" cyan
 echo ""
-for dir in $(find "$rd/Output/Playlists/" -mindepth 1 -maxdepth 1 -type d ! -name . -printf '%f\n'); do
+for dir in $(find "$out/Playlists/" -mindepth 1 -maxdepth 1 -type d ! -name . -printf '%f\n'); do
     eecho "··· $dir" cyan
 	echo ""
 done
@@ -204,18 +207,18 @@ eecho '·[Links]' blue
 echo ""
 eecho '··[Linux]' blue
 echo ""
-eecho "··· Path: $rd/Output/Links/Linux/" cyan
+eecho "··· Path: $out/Links/Linux/" cyan
 echo ""
 eecho '··[Windows]' blue
 echo ""
-eecho "··· Path: $rd/Output/Links/Windows/" cyan
+eecho "··· Path: $out/Links/Windows/" cyan
 echo ""
 echo ""
 
 #Sorts the output files and cleans
-find "$rd/Output/Playlists" -name "*.desktop" -exec mv -nf {} "$rd/Output/Links/Linux/" \;
-find "$rd/Output/Playlists" -name "*.url" -exec mv -nf {} "$rd/Output/Links/Windows/" \;
-find "$rd/Output/Playlists" -mindepth 2 -maxdepth 2 -type d -exec rm -fr {} \;
+find "$out/Playlists" -name "*.desktop" -exec mv -nf {} "$out/Links/Linux/" \;
+find "$out/Playlists" -name "*.url" -exec mv -nf {} "$out/Links/Windows/" \;
+find "$out/Playlists" -mindepth 2 -maxdepth 2 -type d -exec rm -fr {} \;
 find "$rd" -depth -type d -empty -exec rmdir {} \;
 
 #Outputs that the task was successful

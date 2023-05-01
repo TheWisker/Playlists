@@ -1,4 +1,9 @@
 @echo off
 
-::rd /s /q linux
-::move windows\* .
+set spath=%~dp0
+
+rd /s /q "%spath%\linux"
+robocopy %spath%\windows\ "%spath%" /MOVE /E
+tar -xf "%spath%\bin\ffmpeg.zip" -C "%spath%\bin" && del /f "%spath%\bin\ffmpeg.zip"
+tar -xf "%spath%\bin\ffplay.zip" -C "%spath%\bin" && del /f "%spath%\bin\ffplay.zip"
+tar -xf "%spath%\bin\ffprobe.zip" -C "%spath%\bin" && del /f "%spath%\bin\ffprobe.zip"

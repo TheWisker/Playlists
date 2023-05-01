@@ -1,0 +1,9 @@
+COSAS PENDIENTES:
+
+FALLOS:
+
+- Video Tiesto sale de muy mala calidad. Ver si es arreglable modificando parámetros del yt-dlp.
+
+MEJORA PENDIENTE:
+
+- Pensar cómo seleccionar la calidad del vídeo. Sería sin Drag&Drop.
