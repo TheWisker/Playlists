@@ -18,7 +18,7 @@
 
 <h2 align="center">Dependencies</h2>
 
-It only depends on the unzip binary to run the linux.sh on Linux
+To run the linuz.sh on Linux the unzip binary is needed
 
 <h2 align="center">Installation</h2>
 
