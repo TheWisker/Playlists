@@ -1,6 +1,6 @@
 <h1 align="center">Playlists Manager</h1>
 <div align="center">
-    <img width="250" src="./assets/logo.png">
+    <img width="200" src="./assets/logo.png">
 </div>
 <p align="center">Linux and Windows console scripts that wrap the yt-dlp binary to manage playlists</p>
 
@@ -10,7 +10,9 @@
 
 <h2 align="center">Screenshots</h2>
 
-![Linux script screenshot](./assets/Screenshot_One.png)
+<p align="center">
+    <img src="./assets/Screenshot_One.png">
+</p>
 
 <!--![Windows script screenshot](./assets/Screenshot_Two.png)-->
 
@@ -25,9 +27,8 @@ Run the linux.sh or windows.bat file depending on your system.
 <h2 align="center">Authors</h2>
 <div align="center">
     <img width="200" height="200" src="./assets/profile.png"></img>
-</div>
-<h4 align="center">TheWisker</h4>
-<div align="center">
     <img width="200" height="200" src="./assets/profile2.png"></img>
 </div>
-<h4 align="center">alex-bia</h4>
+<div align="center">
+    <h4 align="center"><pre>TheWisker                   alex-bia</pre></h4>
+</div>
