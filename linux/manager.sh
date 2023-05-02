@@ -228,7 +228,7 @@ echo ""
 #Prints the playlists path and names
 eecho '·[Playlists]' blue
 echo ""
-eecho "·· Path: $$out/Playlists/" cyan
+eecho "·· Path: $out/Playlists/" cyan
 echo ""
 for dir in $(find "$out/Playlists/" -mindepth 1 -maxdepth 1 -type d ! -name . -printf '%f\n'); do
     eecho "··· $dir" cyan
