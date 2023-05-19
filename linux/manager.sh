@@ -120,10 +120,10 @@ echo ""
 #Prints out if it is going to use an archive file
 eecho '· [Archive]' blue
 echo ""
-if [ -f "$rd/yt-dlp.archive" ]; then
+if [ -f "$out/yt-dlp.archive" ]; then
 	eecho '··· Status: Found' cyan
 	echo ""
-	eecho "··· Path: $rd/yt-dlp.archive" cyan
+	eecho "··· Path: $out/yt-dlp.archive" cyan
 else
 	eecho '··· Status: Not found' cyan
 fi
@@ -205,7 +205,7 @@ fi
 eecho "Starting downloads!" green
 echo ""
 echo ""
-"$rd/bin/yt-dlp" --ffmpeg-location "$rd/bin/" --download-archive "$rd/yt-dlp.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
+"$rd/bin/yt-dlp" --ffmpeg-location "$rd/bin/" --download-archive "$out/yt-dlp.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
 -P "$out/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" \
 -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" \
 -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" \
