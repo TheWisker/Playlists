@@ -120,10 +120,10 @@ echo ""
 #Prints out if it is going to use an archive file
 eecho '· [Archive]' blue
 echo ""
-if [ -f "$out/yt-dlp.archive" ]; then
+if [ -f "$out/Playlists/yt-dlp.archive" ]; then
 	eecho '··· Status: Found' cyan
 	echo ""
-	eecho "··· Path: $out/yt-dlp.archive" cyan
+	eecho "··· Path: $out/Playlists/yt-dlp.archive" cyan
 else
 	eecho '··· Status: Not found' cyan
 fi
