@@ -114,10 +114,10 @@ echo ""
 #Prints out if it is going to use an archive file
 eecho '· [Archive]' blue
 echo ""
-if [ -f "$out/yt-dlp-ln.archive" ]; then
+if [ -f "$out/Links/yt-dlp-ln.archive" ]; then
 	eecho '··· Status: Found' cyan
 	echo ""
-	eecho "··· Path: $out/yt-dlp-ln.archive" cyan
+	eecho "··· Path: $out/Links/yt-dlp-ln.archive" cyan
 else
 	eecho '··· Status: Not found' cyan
 fi
