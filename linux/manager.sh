@@ -9,10 +9,10 @@
 # .... (true) Checks for each parameter if it is a file or an url:
 # ......... (file) Extracts the URL field and adds it to the urls array
 # ......... (url) Adds it to the urls array
-# ·· Asks for the format (video/audio)
-# ·· Asks for cookies (yes/no)
+# ·· Asks for the format (video/audio) if not previously defined
+# ·· Asks for cookies (yes/no) if not previously defined
 # ·· Prints a summary and asks to continue
-# ·· Updates yt-dlp if it was not used for more than one day
+# ·· Updates yt-dlp if it was not used for more than one day if using it self-contained
 # ·· Makes output directories
 # ·· Constructs the command and executes it
 # ·· Sorts the output files and cleans
@@ -35,9 +35,9 @@ urls=()
 rd=$(dirname "$(realpath "$0")")
 
 #Output path
-out="$rd/Output"
+out=${out:-"$rd/Output"}
 
-#Sources the colors definitions
+#Sources the color definitions
 source "$rd/bin/colors.sh"
 
 #Output formating function:
@@ -88,16 +88,20 @@ else
 	done
 fi
 
-#Asks if it should download only audio defaulting to yes
-eecho 'Audio only [Y/n]: ' purple
-read audio
-audio=${audio:-"Y"}
+if [ ! -z "$audio" ]; then
+	#Asks if it should download only audio defaulting to yes
+	eecho 'Audio only [Y/n]: ' purple
+	read audio
+	audio=${audio:-"Y"}
+fi
 
-#Asks if it should use cookies defaulting to yes
-eecho 'Cookies [Y/n]: ' purple
-read cookies
-cookies=${cookies:-"Y"}
-echo ""
+if [ ! -z "$cookies" ]; then
+	#Asks if it should use cookies defaulting to yes
+	eecho 'Cookies [Y/n]: ' purple
+	read cookies
+	cookies=${cookies:-"Y"}
+	echo ""
+fi
 
 #Prints out the summary of the task
 eecho '[Summary]' blue
@@ -164,11 +168,13 @@ else
 fi
 echo ""
 
-#Updates yt-dlp if it was not used for more than one day
-if ! [[ $(find "$rd/bin/" -type f -name "yt-dlp" -atime +0) ]]; then
-	eecho 'Updating yt-dlp!' green
-	echo ""
-	"$rd/bin/yt-dlp" -U
+if [ -f "$rd/bin/yt-dlp" ]; then
+	#Updates yt-dlp if it was not used for more than one day
+	if ! [[ $(find "$rd/bin/" -type f -name "yt-dlp" -atime +0) ]]; then
+		eecho 'Updating yt-dlp!' green
+		echo ""
+		"$rd/bin/yt-dlp" -U
+	fi
 fi
 
 #Makes output directories
@@ -181,6 +187,20 @@ echo ""
 eecho "mkdir: $out/Links/Windows" green
 echo ""
 echo ""
+
+#Sets the ffmpeg flags needed depending on self-contained usage
+if [ -f "$rd/bin/ffmpeg" ]; then
+	ffmpeg=(--ffmpeg-location "$rd/bin/")
+else
+	ffmpeg=()
+fi
+
+#Sets the yt-dlp binary to use depending on self-contained usage
+if [ -f "$rd/bin/yt-dlp" ]; then
+	ytdlp="$rd/bin/yt-dlp"
+else
+	ytdlp="yt-dlp"
+fi
 
 #Sets the audio flags needed depending on its own value
 if [ ${audio^^} == "Y" ]; then
@@ -205,14 +225,14 @@ fi
 eecho "Starting downloads!" green
 echo ""
 echo ""
-"$rd/bin/yt-dlp" --ffmpeg-location "$rd/bin/" --download-archive "$out/Playlists/yt-dlp.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
+"$ytdlp" --download-archive "$out/Playlists/yt-dlp.archive" -N $(nproc) -R 12 --no-playlist --buffer-size 10240 \
 -P "$out/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" \
 -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" \
 -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" \
---no-force-overwrites -c --write-description --write-info-json --write-playlist-metafiles --clean-info-json --cache-dir "$rd/Cache" \
+--no-force-overwrites -c --write-description --write-info-json --write-playlist-metafiles --clean-info-json --cache-dir "~/.cache/yt-playlist" \
 --write-thumbnail --write-url-link --write-desktop-link --progress --console-title --write-subs --write-auto-subs --no-keep-video \
 --post-overwrites --embed-subs --embed-thumbnail --embed-metadata --embed-chapters --embed-info-json --sponsorblock-api "https://sponsor.ajay.app" \
---extractor-retries 5 ${audio[@]} ${cookies[@]} ${urls[@]}
+--extractor-retries 5 ${ffmpeg[@]} ${audio[@]} ${cookies[@]} ${urls[@]}
 
 #Sorts the output files and cleans
 find "$out/Playlists" -name "*.desktop" -exec mv -nf {} "$out/Links/Linux/" \;
@@ -231,7 +251,7 @@ echo ""
 eecho "·· Path: $out/Playlists/" cyan
 echo ""
 for dir in $(find "$out/Playlists/" -mindepth 1 -maxdepth 1 -type d ! -name . -printf '%f\n'); do
-    eecho "··· $dir" cyan
+    eecho "··· $dir ($(ls -1 "$dir" | wc -l))" cyan
 	echo ""
 done
 

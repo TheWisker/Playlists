@@ -34,9 +34,9 @@ urls=()
 rd=$(dirname "$(realpath "$0")")
 
 #Output path
-out="$rd/Output"
+out=${out:-"$rd/Output"}
 
-#Sources the colors definitions
+#Sources the color definitions
 source "$rd/bin/colors.sh"
 
 #Output formating function:
@@ -87,11 +87,13 @@ else
 	done
 fi
 
-#Asks if it should use cookies defaulting to yes
-eecho 'Cookies [Y/n]: ' purple
-read cookies
-cookies=${cookies:-"Y"}
-echo ""
+if [ ! -z "$cookies" ]; then
+	#Asks if it should use cookies defaulting to yes
+	eecho 'Cookies [Y/n]: ' purple
+	read cookies
+	cookies=${cookies:-"Y"}
+	echo ""
+fi
 
 #Prints out the summary of the task
 eecho '[Summary]' blue
@@ -148,11 +150,13 @@ else
 fi
 echo ""
 
-#Updates yt-dlp if it was not used for more than one day
-if ! [[ $(find "$rd/bin" -type f -name "yt-dlp" -atime +0) ]]; then
-	eecho 'Updating yt-dlp!' green
-	echo ""
-	"$rd/bin/yt-dlp" -U
+if [ -f "$rd/bin/yt-dlp" ]; then
+	#Updates yt-dlp if it was not used for more than one day
+	if ! [[ $(find "$rd/bin/" -type f -name "yt-dlp" -atime +0) ]]; then
+		eecho 'Updating yt-dlp!' green
+		echo ""
+		"$rd/bin/yt-dlp" -U
+	fi
 fi
 
 #Makes output directories
@@ -162,6 +166,20 @@ echo ""
 eecho "mkdir: $out/Links/Windows" green
 echo ""
 echo ""
+
+#Sets the ffmpeg flags needed depending on self-contained usage
+if [ -f "$rd/bin/ffmpeg" ]; then
+	ffmpeg=(--ffmpeg-location "$rd/bin/")
+else
+	ffmpeg=()
+fi
+
+#Sets the yt-dlp binary to use depending on self-contained usage
+if [ -f "$rd/bin/yt-dlp" ]; then
+	ytdlp="$rd/bin/yt-dlp"
+else
+	ytdlp="yt-dlp"
+fi
 
 #Sets the cookies flags needed depending on its own value
 if [ ${cookies^^} == "Y" ]; then
@@ -179,13 +197,19 @@ fi
 eecho "Starting downloads!" green
 echo ""
 echo ""
-"$rd/bin/yt-dlp" --ffmpeg-location "$rd/bin/" --download-archive "$out/Links/yt-dlp-ln.archive" -N 3 -R 12 --no-playlist --buffer-size 10240 \
+"$ytdlp" --download-archive "$out/Links/yt-dlp.archive" -N $(nproc) -R 12 --no-playlist --buffer-size 10240 \
 -P "$out/Playlists" -o "%(playlist_title)s/%(title)s.%(ext)s" -o "thumbnail:%(playlist_title)s/thumbnails/%(title)s.%(ext)s" \
 -o "infojson:%(playlist_title)s/jsons/%(title)s.%(ext)s" -o "subtitle:%(playlist_title)s/subtitles/%(title)s.%(ext)s" \
 -o "description:%(playlist_title)s/descriptions/%(title)s.%(ext)s" -o "link:%(playlist_title)s/links/%(title)s.%(ext)s" \
---no-force-overwrites -c --cache-dir "$rd/Cache" --write-url-link --write-desktop-link --progress --console-title --skip-download \
+--no-force-overwrites -c --cache-dir "~/.cache/yt-playlist" --write-url-link --write-desktop-link --progress --console-title --skip-download \
 --no-write-thumbnail --no-write-subs --no-write-auto-subs --no-write-description --no-write-info-json --no-write-playlist-metafiles \
---no-keep-video --post-overwrites --extractor-retries 5 ${cookies[@]} ${urls[@]}
+--no-keep-video --post-overwrites --extractor-retries 5 ${ffmpeg[@]} ${cookies[@]} ${urls[@]}
+
+#Sorts the output files and cleans
+find "$out/Playlists" -name "*.desktop" -exec mv -nf {} "$out/Links/Linux/" \;
+find "$out/Playlists" -name "*.url" -exec mv -nf {} "$out/Links/Windows/" \;
+find "$out/Playlists" -mindepth 2 -maxdepth 2 -type d -exec rm -fr {} \;
+find "$rd" -depth -type d -empty -exec rmdir {} \;
 
 #Prints an output summary
 echo ""
@@ -198,7 +222,7 @@ echo ""
 eecho "·· Path: $out/Playlists/" cyan
 echo ""
 for dir in $(find "$out/Playlists/" -mindepth 1 -maxdepth 1 -type d ! -name . -printf '%f\n'); do
-    eecho "··· $dir" cyan
+    eecho "··· $dir ($(ls -1 "$dir" | wc -l))" cyan
 	echo ""
 done
 
@@ -214,12 +238,6 @@ echo ""
 eecho "··· Path: $out/Links/Windows/" cyan
 echo ""
 echo ""
-
-#Sorts the output files and cleans
-find "$out/Playlists" -name "*.desktop" -exec mv -nf {} "$out/Links/Linux/" \;
-find "$out/Playlists" -name "*.url" -exec mv -nf {} "$out/Links/Windows/" \;
-find "$out/Playlists" -mindepth 2 -maxdepth 2 -type d -exec rm -fr {} \;
-find "$rd" -depth -type d -empty -exec rmdir {} \;
 
 #Outputs that the task was successful
 eecho 'Successfully performed all tasks!' green

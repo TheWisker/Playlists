@@ -57,9 +57,10 @@ echo ""
 
 eecho 'This will remove the Windows version and expand the Linux version.' cyan
 echo ""
-eecho 'This will also unzip the ffmpeg library, thus it needs the unzip binary installed.' cyan
+eecho 'This will also remove the ffmpeg library, and yt-dlp binary thus it needs them installed in the system.' cyan
 echo ""
 echo ""
+
 
 if [ "$1" = "noconfirm" ]; then
 	#Asks to continue
@@ -81,8 +82,9 @@ fi
 rm -fr "$rd/windows"
 rm -f "$rd/windows.bat"
 mv "$rd/linux/"* "$rd"
-unzip "$rd/bin/ffmpeg.zip" -d "$rd/bin" && rm -fr "$rd/bin/ffmpeg.zip"
-unzip "$rd/bin/ffplay.zip" -d "$rd/bin" && rm -fr "$rd/bin/ffplay.zip"
-unzip "$rd/bin/ffprobe.zip" -d "$rd/bin" && rm -fr "$rd/bin/ffprobe.zip"
+rm -fr "$rd/bin/ffmpeg.zip"
+rm -fr "$rd/bin/ffplay.zip"
+rm -fr "$rd/bin/ffprobe.zip"
+rm -fr "$rd/bin/yt-dlp"
 rm -fr "$rd/linux"
 rm -f "$rd/linux.sh"
