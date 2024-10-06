@@ -62,7 +62,7 @@ echo ""
 echo ""
 
 
-if [ "$1" = "noconfirm" ]; then
+if [ "$1" != "noconfirm" ]; then
 	#Asks to continue
 	eecho 'Continue [Y/n]: ' purple
 	read continue

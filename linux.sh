@@ -61,7 +61,7 @@ eecho 'This will also unzip the ffmpeg library, thus it needs the unzip binary i
 echo ""
 echo ""
 
-if [ "$1" = "noconfirm" ]; then
+if [ "$1" != "noconfirm" ]; then
 	#Asks to continue
 	eecho 'Continue [Y/n]: ' purple
 	read continue
