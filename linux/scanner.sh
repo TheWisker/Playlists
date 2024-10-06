@@ -20,8 +20,8 @@
 # ·· Exits
 
 #Duplicate all output to a log file
-mkdir -p $(dirname "$(realpath "$0")")/log
-exec &> >(tee $(dirname "$(realpath "$0")")/log/$(basename "${0%.*}").log)
+mkdir -p "~/.cache" &> /dev/null
+exec &> >(tee ~/.cache/ytl-playlist.log)
 
 #Starts bash unofficial strict mode: [http://redsymbol.net/articles/unofficial-bash-strict-mode/]
 #set -euo pipefail
@@ -87,7 +87,7 @@ else
 	done
 fi
 
-if [ ! -z "$cookies" ]; then
+if [ -z "$cookies" ]; then
 	#Asks if it should use cookies defaulting to yes
 	eecho 'Cookies [Y/n]: ' purple
 	read cookies
@@ -128,7 +128,7 @@ echo ""
 #Prints out if it is going to use cookies
 eecho '· [Cookies]' blue
 echo ""
-if [ ${cookies^^} == "Y" ]; then
+if [ "${cookies^^}" == "Y" ]; then
 	eecho '··· Enabled' cyan
 else
 	eecho '··· Disabled' cyan
@@ -182,7 +182,7 @@ else
 fi
 
 #Sets the cookies flags needed depending on its own value
-if [ ${cookies^^} == "Y" ]; then
+if [ "${cookies^^}" == "Y" ]; then
 	cookies=(--cookies "./cookies.txt")
 	if [ ! -f "$rd/cookies.txt" ]; then
 		eecho 'Error: ./cookies.txt does not exist. Create it or deactivate the cookies!' red

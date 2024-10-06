@@ -21,8 +21,8 @@
 # ·· Exits
 
 #Duplicate all output to a log file
-mkdir -p $(dirname "$(realpath "$0")")/log
-exec &> >(tee $(dirname "$(realpath "$0")")/log/$(basename "${0%.*}").log)
+mkdir -p "~/.cache" &> /dev/null
+exec &> >(tee ~/.cache/yt-playlist.log)
 
 #Starts bash unofficial strict mode: [http://redsymbol.net/articles/unofficial-bash-strict-mode/]
 #set -euo pipefail
@@ -88,14 +88,14 @@ else
 	done
 fi
 
-if [ ! -z "$audio" ]; then
+if [ -z "$audio" ]; then
 	#Asks if it should download only audio defaulting to yes
 	eecho 'Audio only [Y/n]: ' purple
 	read audio
 	audio=${audio:-"Y"}
 fi
 
-if [ ! -z "$cookies" ]; then
+if [ -z "$cookies" ]; then
 	#Asks if it should use cookies defaulting to yes
 	eecho 'Cookies [Y/n]: ' purple
 	read cookies
@@ -136,7 +136,7 @@ echo ""
 #Prints out the format it is going to use
 eecho '· [Format]' blue
 echo ""
-if [ ${audio^^} == "Y" ]; then
+if [ "${audio^^}" == "Y" ]; then
 	eecho '··· Audio only' cyan
 else
 	eecho '··· Video + Audio' cyan
@@ -146,7 +146,7 @@ echo ""
 #Prints out if it is going to use cookies
 eecho '· [Cookies]' blue
 echo ""
-if [ ${cookies^^} == "Y" ]; then
+if [ "${cookies^^}" == "Y" ]; then
 	eecho '··· Enabled' cyan
 else
 	eecho '··· Disabled' cyan
@@ -203,14 +203,14 @@ else
 fi
 
 #Sets the audio flags needed depending on its own value
-if [ ${audio^^} == "Y" ]; then
+if [ "${audio^^}" == "Y" ]; then
 	audio=(-x --audio-quality 0 -f "bestaudio/bestaudio*/best" --match-filter "duration<600")
 else
 	audio=(-f "bestvideo+bestaudio/bestvideo*+bestaudio*/best")
 fi
 
 #Sets the cookies flags needed depending on its own value
-if [ ${cookies^^} == "Y" ]; then
+if [ "${cookies^^}" == "Y" ]; then
 	cookies=(--cookies "./cookies.txt")
 	if [ ! -f "$rd/cookies.txt" ]; then
 		eecho 'Error: ./cookies.txt does not exist. Create it or deactivate the cookies!' red
